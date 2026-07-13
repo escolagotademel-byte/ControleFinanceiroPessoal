@@ -1,8 +1,8 @@
-const SUPABASE_URL = 'COLE_AQUI_A_URL_DO_SUPABASE_PESSOAL';
+const SUPABASE_URL = 'https://jzequkwvltgougdidehx.supabase.co';
 
-const SUPABASE_KEY = 'COLE_AQUI_A_CHAVE_PUBLICAVEL_DO_SUPABASE_PESSOAL';
+const SUPABASE_KEY = 'sb_publishable_YD5ZKKtn6H16nLDVbPUJZw_J82U1Sff';
 
 const supabaseClient = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
+    SUPABASE_URL,
+    SUPABASE_KEY
 );
