@@ -63,20 +63,12 @@ async function navegar(page) {
             await renderSaidas();
         }
 
-        if (page === 'mensalidades') {
-            await renderMensalidades();
-        }
-
         if (page === 'recorrencias') {
             await renderRecorrencias();
         }
 
         if (page === 'previsao') {
             await renderPrevisao();
-        }
-
-        if (page === 'relatorios') {
-            await renderRelatorios();
         }
 
         if (page === 'configuracoes') {
