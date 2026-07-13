@@ -1,3 +1,8 @@
-const SUPABASE_URL = 'https://xpwzdkqckjxahfmhzaws.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_EFXE86-6sbt5984P0se27w_Wufe_mad';
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_URL = 'COLE_AQUI_A_URL_DO_SUPABASE_PESSOAL';
+
+const SUPABASE_KEY = 'COLE_AQUI_A_CHAVE_PUBLICAVEL_DO_SUPABASE_PESSOAL';
+
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
