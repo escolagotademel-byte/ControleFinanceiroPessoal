@@ -1298,3 +1298,464 @@
         grid-template-columns: 1fr;
     }
 }
+/* ==================================================
+   FINANCEIRO PESSOAL — APP SEM MENU
+================================================== */
+
+.app-pessoal,
+.app-pessoal * {
+    box-sizing: border-box;
+}
+
+.app-pessoal {
+    display: block;
+    min-height: 100vh;
+    margin: 0;
+    background: #f4f6fb;
+}
+
+.main-pessoal {
+    width: 100%;
+    max-width: 1100px;
+    min-height: 100vh;
+
+    margin: 0 auto;
+    padding: 28px;
+}
+
+.topbar-pessoal {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.topbar-pessoal h1 {
+    margin: 0;
+}
+
+.topbar-pessoal p {
+    margin-top: 5px;
+}
+
+.btn-voltar-inicio {
+    min-height: 42px;
+    padding: 9px 14px;
+
+    background: #ffffff;
+    color: #334155;
+
+    border: 1px solid #dbe2ea;
+    border-radius: 12px;
+
+    box-shadow:
+        0 5px 14px rgba(15, 23, 42, 0.06);
+
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-voltar-inicio[hidden] {
+    display: none !important;
+}
+
+.dashboard-app-pessoal {
+    width: 100%;
+    display: grid;
+    gap: 16px;
+}
+
+/* CARDS FINANCEIROS */
+
+.cards-financeiros-pessoal {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 14px;
+}
+
+.card-financeiro {
+    min-width: 0;
+    min-height: 125px;
+
+    padding: 21px;
+
+    color: #ffffff;
+
+    border-radius: 22px;
+
+    box-shadow:
+        0 8px 20px rgba(15, 23, 42, 0.10);
+}
+
+.card-financeiro span {
+    display: block;
+
+    margin-bottom: 15px;
+
+    color: rgba(255, 255, 255, 0.92);
+
+    font-size: 13px;
+}
+
+.card-financeiro strong {
+    display: block;
+
+    color: #ffffff;
+
+    font-size: 25px;
+    line-height: 1.15;
+
+    overflow-wrap: anywhere;
+}
+
+.card-financeiro.saldo {
+    background:
+        linear-gradient(
+            135deg,
+            #10b981,
+            #059669
+        );
+}
+
+.card-financeiro.entrada {
+    background:
+        linear-gradient(
+            135deg,
+            #06b6d4,
+            #0284c7
+        );
+}
+
+.card-financeiro.saida {
+    background:
+        linear-gradient(
+            135deg,
+            #fb923c,
+            #f97316
+        );
+}
+
+/* ATALHOS */
+
+.atalhos-pessoal {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 10px;
+}
+
+.atalho-pessoal {
+    width: 100%;
+    min-width: 0;
+    min-height: 72px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 13px 15px;
+
+    background: #ffffff;
+    color: #334155;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+
+    box-shadow:
+        0 7px 18px rgba(15, 23, 42, 0.06);
+
+    text-align: left;
+    cursor: pointer;
+}
+
+.atalho-pessoal > span {
+    flex: 0 0 auto;
+
+    font-size: 23px;
+}
+
+.atalho-pessoal > div {
+    min-width: 0;
+}
+
+.atalho-pessoal strong {
+    display: block;
+
+    color: #334155;
+
+    font-size: 14px;
+}
+
+.atalho-pessoal small {
+    display: block;
+
+    margin-top: 4px;
+
+    color: #64748b;
+
+    font-size: 11px;
+}
+
+.atalho-pessoal.entrada {
+    border-left: 5px solid #10b981;
+}
+
+.atalho-pessoal.saida {
+    border-left: 5px solid #ef4444;
+}
+
+.atalho-pessoal.recorrencia {
+    border-left: 5px solid #7c3aed;
+}
+
+.atalho-pessoal.previsao {
+    border-left: 5px solid #2563eb;
+}
+
+/* ÚLTIMOS LANÇAMENTOS */
+
+.painel-lancamentos-pessoal {
+    width: 100%;
+}
+
+.titulo-lancamentos-pessoal h2 {
+    margin-bottom: 3px;
+}
+
+.titulo-lancamentos-pessoal p {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+.lista-lancamentos-pessoal {
+    width: 100%;
+
+    display: grid;
+
+    margin-top: 12px;
+}
+
+.lancamento-pessoal {
+    width: 100%;
+    min-width: 0;
+
+    display: grid;
+    grid-template-columns:
+        42px minmax(0, 1fr) auto;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 14px 0;
+
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.lancamento-pessoal:last-child {
+    border-bottom: 0;
+}
+
+.icone-lancamento-pessoal {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.icone-lancamento-pessoal.entrada {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.icone-lancamento-pessoal.saida {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.dados-lancamento-pessoal {
+    min-width: 0;
+}
+
+.dados-lancamento-pessoal strong {
+    display: block;
+
+    overflow: hidden;
+
+    color: #0f172a;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dados-lancamento-pessoal span {
+    display: block;
+
+    margin-top: 4px;
+
+    color: #64748b;
+
+    font-size: 12px;
+}
+
+.valor-lancamento-pessoal {
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.valor-lancamento-pessoal.entrada {
+    color: #15803d;
+}
+
+.valor-lancamento-pessoal.saida {
+    color: #dc2626;
+}
+
+/* MOBILE */
+
+@media (max-width: 768px) {
+
+    html,
+    body {
+        width: 100%;
+        max-width: 100%;
+
+        overflow-x: hidden !important;
+    }
+
+    .main-pessoal {
+        width: 100%;
+        max-width: 100%;
+
+        padding: 16px 12px 30px;
+    }
+
+    .topbar-pessoal {
+        align-items: flex-start;
+
+        margin-bottom: 16px;
+    }
+
+    .topbar-pessoal h1 {
+        font-size: 24px;
+    }
+
+    .topbar-pessoal p {
+        font-size: 13px;
+    }
+
+    .topbar-pessoal .status {
+        width: 100%;
+    }
+
+    .btn-voltar-inicio {
+        padding: 8px 12px;
+
+        font-size: 12px;
+    }
+
+    .cards-financeiros-pessoal {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 10px;
+    }
+
+    .card-financeiro {
+        min-height: 105px;
+
+        padding: 15px;
+
+        border-radius: 18px;
+    }
+
+    .card-financeiro.saldo {
+        grid-column: 1 / -1;
+    }
+
+    .card-financeiro span {
+        margin-bottom: 11px;
+
+        font-size: 12px;
+    }
+
+    .card-financeiro strong {
+        font-size: 19px;
+    }
+
+    .atalhos-pessoal {
+        grid-template-columns: 1fr;
+
+        gap: 9px;
+    }
+
+    .atalho-pessoal {
+        min-height: 64px;
+
+        padding: 11px 13px;
+    }
+
+    .painel-lancamentos-pessoal {
+        padding: 15px;
+
+        border-radius: 17px;
+
+        overflow: hidden;
+    }
+
+    .lancamento-pessoal {
+        grid-template-columns:
+            40px minmax(0, 1fr);
+
+        gap: 10px;
+    }
+
+    .icone-lancamento-pessoal {
+        width: 38px;
+        height: 38px;
+    }
+
+    .valor-lancamento-pessoal {
+        grid-column: 2;
+
+        margin-top: -5px;
+
+        justify-self: start;
+
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 380px) {
+
+    .cards-financeiros-pessoal {
+        grid-template-columns: 1fr;
+    }
+
+    .card-financeiro.saldo {
+        grid-column: auto;
+    }
+}
