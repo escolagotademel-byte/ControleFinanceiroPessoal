@@ -1,75 +1,50 @@
-let paginaAtual = 'dashboard';
+let paginaAtual = "dashboard";
 
-document.addEventListener('DOMContentLoaded', async () => {
-    const menu = document.querySelector('.sidebar');
-    const botaoMenuInferior = document.getElementById('btnMenuInferior');
-
-    if (botaoMenuInferior && menu) {
-        botaoMenuInferior.addEventListener('click', event => {
-            event.preventDefault();
-            event.stopPropagation();
-
-            menu.classList.toggle('menu-aberto');
-        });
-    }
-
-    if (menu) {
-        menu.addEventListener('click', async event => {
-            const botao = event.target.closest('[data-page]');
-
-            if (!botao) {
-                return;
-            }
-
-            event.preventDefault();
-
-            const pagina = botao.dataset.page;
-
-            if (!pagina) {
-                return;
-            }
-
-            await navegar(pagina);
-
-            if (window.innerWidth <= 768) {
-                menu.classList.remove('menu-aberto');
-            }
-        });
-    }
-
+document.addEventListener("DOMContentLoaded", async () => {
     await testarConexao();
-    await navegar('dashboard');
+    await navegar("dashboard");
 });
 
 function setTitulo(titulo, subtitulo) {
-    const tituloElemento = document.getElementById('pageTitle');
-    const subtituloElemento = document.getElementById('pageSubtitle');
+    const tituloElemento =
+        document.getElementById("pageTitle");
+
+    const subtituloElemento =
+        document.getElementById("pageSubtitle");
 
     if (tituloElemento) {
         tituloElemento.textContent = titulo;
     }
 
     if (subtituloElemento) {
-        subtituloElemento.textContent = subtitulo || '';
+        subtituloElemento.textContent =
+            subtitulo || "";
     }
 }
 
-function setActive(page) {
-    document.querySelectorAll('[data-page]').forEach(botao => {
-        botao.classList.toggle(
-            'active',
-            botao.dataset.page === page
-        );
-    });
+function controlarBotaoInicio(pagina) {
+    const botao =
+        document.getElementById("btnVoltarInicio");
+
+    if (!botao) {
+        return;
+    }
+
+    botao.hidden = pagina === "dashboard";
 }
 
-async function navegar(page) {
-    paginaAtual = page;
-    setActive(page);
+async function navegar(pagina) {
+    paginaAtual = pagina;
 
-    const app = document.getElementById('app');
+    controlarBotaoInicio(pagina);
+
+    const app = document.getElementById("app");
 
     if (!app) {
+        console.error(
+            "Área principal do sistema não encontrada."
+        );
+
         return;
     }
 
@@ -80,38 +55,35 @@ async function navegar(page) {
     `;
 
     try {
-        switch (page) {
-            case 'dashboard':
+        switch (pagina) {
+            case "dashboard":
                 await renderDashboard();
                 break;
 
-            case 'entradas':
+            case "entradas":
                 await renderEntradas();
                 break;
 
-            case 'saidas':
+            case "saidas":
                 await renderSaidas();
                 break;
 
-            case 'recorrencias':
+            case "recorrencias":
                 await renderRecorrencias();
                 break;
 
-            case 'previsao':
+            case "previsao":
                 await renderPrevisao();
-                break;
-
-            case 'configuracoes':
-                await renderConfiguracoes();
                 break;
 
             default:
                 await renderDashboard();
+                break;
         }
 
         window.scrollTo({
             top: 0,
-            behavior: 'smooth'
+            behavior: "smooth"
         });
     } catch (erro) {
         console.error(erro);
@@ -121,9 +93,17 @@ async function navegar(page) {
                 <p class="msg">
                     Erro: ${escapeHtml(
                         erro?.message ||
-                        'Não foi possível abrir esta página.'
+                        "Não foi possível abrir esta página."
                     )}
                 </p>
+
+                <button
+                    class="btn"
+                    type="button"
+                    onclick="navegar('dashboard')"
+                >
+                    Voltar ao início
+                </button>
             </div>
         `;
     }
