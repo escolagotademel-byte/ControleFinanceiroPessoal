@@ -2,28 +2,40 @@ let paginaAtual = 'dashboard';
 
 document.addEventListener('DOMContentLoaded', async () => {
     const menu = document.querySelector('.sidebar');
+    const botaoMenuMobile = document.getElementById('btnMenuMobile');
 
-    /*
-     * Um único evento controla todos os botões do menu.
-     * Esse formato funciona melhor no celular.
-     */
-    menu.addEventListener('click', async event => {
-        const botao = event.target.closest('.nav');
+    if (botaoMenuMobile && menu) {
+        botaoMenuMobile.addEventListener('click', event => {
+            event.preventDefault();
+            event.stopPropagation();
 
-        if (!botao) {
-            return;
-        }
+            menu.classList.toggle('menu-aberto');
+        });
+    }
 
-        event.preventDefault();
+    if (menu) {
+        menu.addEventListener('click', async event => {
+            const botao = event.target.closest('.nav');
 
-        const pagina = botao.dataset.page;
+            if (!botao) {
+                return;
+            }
 
-        if (!pagina) {
-            return;
-        }
+            event.preventDefault();
 
-        await navegar(pagina);
-    });
+            const pagina = botao.dataset.page;
+
+            if (!pagina) {
+                return;
+            }
+
+            await navegar(pagina);
+
+            if (window.innerWidth <= 768) {
+                menu.classList.remove('menu-aberto');
+            }
+        });
+    }
 
     await testarConexao();
     await navegar('dashboard');
@@ -96,13 +108,8 @@ async function navegar(page) {
 
             default:
                 await renderDashboard();
-                break;
         }
 
-        /*
-         * Ao trocar de página no celular,
-         * volta automaticamente ao início da tela.
-         */
         window.scrollTo({
             top: 0,
             behavior: 'smooth'
@@ -114,7 +121,8 @@ async function navegar(page) {
             <div class="painel">
                 <p class="msg">
                     Erro: ${escapeHtml(
-                        erro?.message || 'Não foi possível abrir esta página.'
+                        erro?.message ||
+                        'Não foi possível abrir esta página.'
                     )}
                 </p>
             </div>
