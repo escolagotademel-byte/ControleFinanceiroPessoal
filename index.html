@@ -3,58 +3,98 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Financeiro Pessoal</title>
+
+  <title>Controle Financeiro</title>
+
   <link rel="stylesheet" href="css/style.css" />
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body>
-  <aside class="sidebar">
-    <div class="brand">💰 Financeiro Pessoal</div>
-    <button
-  id="btnMenuInferior"
-  class="nav nav-menu-mobile"
-  type="button"
->
-  ☰ Menu
-</button>
 
-<button class="nav nav-opcao active" data-page="dashboard">
-  🏠 Dashboard
-</button>
-    <button class="nav" data-page="entradas">➕ Entradas</button>
-   <button class="nav" data-page="saidas">➖ Saídas</button>
-<button class="nav" data-page="recorrencias">🔄 Recorrências</button>
-    <button class="nav" data-page="previsao">📅 Fluxo Previsto</button>
-    <button class="nav" data-page="configuracoes">⚙️ Configurações</button>
+<body>
+
+  <aside class="sidebar">
+
+    <div class="brand">💰 Financeiro Pessoal</div>
+
+    <button
+      id="btnMenuInferior"
+      class="nav nav-menu-mobile"
+      type="button"
+    >
+      ☰ Menu
+    </button>
+
+    <button
+      class="nav nav-opcao active"
+      data-page="dashboard"
+      type="button"
+    >
+      🏠 Dashboard
+    </button>
+
+    <button
+      class="nav nav-opcao"
+      data-page="entradas"
+      type="button"
+    >
+      ➕ Entradas
+    </button>
+
+    <button
+      class="nav nav-opcao"
+      data-page="saidas"
+      type="button"
+    >
+      ➖ Saídas
+    </button>
+
+    <button
+      class="nav nav-opcao"
+      data-page="recorrencias"
+      type="button"
+    >
+      🔄 Recorrências
+    </button>
+
+    <button
+      class="nav nav-opcao"
+      data-page="previsao"
+      type="button"
+    >
+      📅 Fluxo Previsto
+    </button>
+
+    <button
+      class="nav nav-opcao"
+      data-page="configuracoes"
+      type="button"
+    >
+      ⚙️ Configurações
+    </button>
+
   </aside>
 
   <main class="main">
+
     <div class="topbar">
 
-  <button
-    id="btnMenuMobile"
-    class="btn-menu-mobile"
-    type="button"
-    aria-label="Abrir menu"
-  >
-    ☰ Menu
-  </button>
+      <div>
+        <h1 id="pageTitle">Controle Financeiro</h1>
+        <p id="pageSubtitle">Resumo financeiro pessoal</p>
+      </div>
 
-  <div>
-    <h1 id="pageTitle">Controle Financeiro</h1>
-    <p id="pageSubtitle">Sistema financeiro pessoal</p>
-  </div>
+      <span id="statusConexao" class="status">
+        Conectando...
+      </span>
 
-  <span id="statusConexao" class="status">
-    Conectando...
-  </span>
-
-</div>
+    </div>
 
     <section id="app"></section>
+
   </main>
 
-    <script src="js/config.js"></script>
+  <script src="js/config.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/dashboard.js"></script>
@@ -64,5 +104,6 @@
   <script src="js/previsao.js"></script>
   <script src="js/configuracoes.js"></script>
   <script src="js/app.js"></script>
+
 </body>
 </html>
