@@ -1759,3 +1759,248 @@
         grid-column: auto;
     }
 }
+/* ==================================================
+   FLUXO PREVISTO — FINANCEIRO PESSOAL
+================================================== */
+
+.previsao-pessoal,
+.previsao-pessoal * {
+    box-sizing: border-box;
+}
+
+.previsao-pessoal {
+    width: 100%;
+    max-width: 100%;
+}
+
+.lista-meses-pessoal {
+    display: grid;
+    gap: 12px;
+}
+
+.mes-previsao-card {
+    width: 100%;
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+
+    box-shadow:
+        0 7px 18px rgba(15, 23, 42, 0.06);
+}
+
+.mes-previsao-cabecalho {
+    width: 100%;
+
+    display: block;
+
+    padding: 17px;
+
+    background: #ffffff;
+    color: #0f172a;
+
+    border: 0;
+
+    text-align: left;
+    cursor: pointer;
+}
+
+.mes-previsao-titulo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+}
+
+.mes-previsao-titulo strong {
+    font-size: 17px;
+    text-transform: capitalize;
+}
+
+.seta-mes {
+    color: #64748b;
+    font-size: 14px;
+}
+
+.mes-previsao-resumo {
+    display: grid;
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.resumo-previsao {
+    min-width: 0;
+
+    padding: 11px 12px;
+
+    background: #f8fafc;
+    border-radius: 12px;
+}
+
+.resumo-previsao span {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #64748b;
+    font-size: 11px;
+}
+
+.resumo-previsao strong {
+    display: block;
+
+    color: #0f172a;
+    font-size: 14px;
+
+    overflow-wrap: anywhere;
+}
+
+.resumo-previsao.entrada {
+    border-left: 4px solid #10b981;
+}
+
+.resumo-previsao.saida {
+    border-left: 4px solid #ef4444;
+}
+
+.resumo-previsao.saldo {
+    border-left: 4px solid #2563eb;
+}
+
+.detalhes-mes-pessoal {
+    padding: 0 17px 10px;
+
+    border-top: 1px solid #e5e7eb;
+}
+
+.detalhes-mes-pessoal[hidden] {
+    display: none !important;
+}
+
+.lancamento-previsao {
+    width: 100%;
+    min-width: 0;
+
+    display: grid;
+    grid-template-columns:
+        40px minmax(0, 1fr) auto;
+
+    align-items: center;
+
+    gap: 11px;
+    padding: 13px 0;
+
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.lancamento-previsao:last-child {
+    border-bottom: 0;
+}
+
+.icone-previsao {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.icone-previsao.entrada {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.icone-previsao.saida {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.dados-previsao {
+    min-width: 0;
+}
+
+.dados-previsao strong {
+    display: block;
+
+    overflow: hidden;
+
+    color: #0f172a;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dados-previsao span {
+    display: block;
+
+    margin-top: 4px;
+
+    color: #64748b;
+    font-size: 11px;
+}
+
+.valor-previsao {
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.valor-previsao.entrada {
+    color: #15803d;
+}
+
+.valor-previsao.saida {
+    color: #dc2626;
+}
+
+@media (max-width: 768px) {
+
+    .mes-previsao-cabecalho {
+        padding: 14px;
+    }
+
+    .mes-previsao-resumo {
+        grid-template-columns: 1fr;
+        gap: 7px;
+    }
+
+    .resumo-previsao {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 10px;
+    }
+
+    .resumo-previsao span {
+        margin-bottom: 0;
+    }
+
+    .detalhes-mes-pessoal {
+        padding: 0 14px 8px;
+    }
+
+    .lancamento-previsao {
+        grid-template-columns:
+            38px minmax(0, 1fr);
+    }
+
+    .valor-previsao {
+        grid-column: 2;
+
+        margin-top: -4px;
+
+        justify-self: start;
+    }
+}
