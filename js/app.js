@@ -1,36 +1,54 @@
 let paginaAtual = 'dashboard';
 
-document.addEventListener(
-    'DOMContentLoaded',
-    async () => {
-        document
-            .querySelectorAll('.nav')
-            .forEach(btn => {
-                btn.addEventListener(
-                    'click',
-                    () => navegar(btn.dataset.page)
-                );
-            });
+document.addEventListener('DOMContentLoaded', async () => {
+    const menu = document.querySelector('.sidebar');
 
-        await testarConexao();
-        await navegar('dashboard');
-    }
-);
+    /*
+     * Um único evento controla todos os botões do menu.
+     * Esse formato funciona melhor no celular.
+     */
+    menu.addEventListener('click', async event => {
+        const botao = event.target.closest('.nav');
+
+        if (!botao) {
+            return;
+        }
+
+        event.preventDefault();
+
+        const pagina = botao.dataset.page;
+
+        if (!pagina) {
+            return;
+        }
+
+        await navegar(pagina);
+    });
+
+    await testarConexao();
+    await navegar('dashboard');
+});
 
 function setTitulo(titulo, subtitulo) {
-    document.getElementById('pageTitle').textContent = titulo;
-    document.getElementById('pageSubtitle').textContent = subtitulo || '';
+    const tituloElemento = document.getElementById('pageTitle');
+    const subtituloElemento = document.getElementById('pageSubtitle');
+
+    if (tituloElemento) {
+        tituloElemento.textContent = titulo;
+    }
+
+    if (subtituloElemento) {
+        subtituloElemento.textContent = subtitulo || '';
+    }
 }
 
 function setActive(page) {
-    document
-        .querySelectorAll('.nav')
-        .forEach(botao => {
-            botao.classList.toggle(
-                'active',
-                botao.dataset.page === page
-            );
-        });
+    document.querySelectorAll('.nav').forEach(botao => {
+        botao.classList.toggle(
+            'active',
+            botao.dataset.page === page
+        );
+    });
 }
 
 async function navegar(page) {
@@ -39,6 +57,11 @@ async function navegar(page) {
 
     const app = document.getElementById('app');
 
+    if (!app) {
+        console.error('Área principal do sistema não encontrada.');
+        return;
+    }
+
     app.innerHTML = `
         <div class="painel">
             <p class="msg">Carregando...</p>
@@ -46,36 +69,53 @@ async function navegar(page) {
     `;
 
     try {
-        if (page === 'dashboard') {
-            await renderDashboard();
+        switch (page) {
+            case 'dashboard':
+                await renderDashboard();
+                break;
+
+            case 'entradas':
+                await renderEntradas();
+                break;
+
+            case 'saidas':
+                await renderSaidas();
+                break;
+
+            case 'recorrencias':
+                await renderRecorrencias();
+                break;
+
+            case 'previsao':
+                await renderPrevisao();
+                break;
+
+            case 'configuracoes':
+                await renderConfiguracoes();
+                break;
+
+            default:
+                await renderDashboard();
+                break;
         }
 
-        if (page === 'entradas') {
-            await renderEntradas();
-        }
-
-        if (page === 'saidas') {
-            await renderSaidas();
-        }
-
-        if (page === 'recorrencias') {
-            await renderRecorrencias();
-        }
-
-        if (page === 'previsao') {
-            await renderPrevisao();
-        }
-
-        if (page === 'configuracoes') {
-            await renderConfiguracoes();
-        }
+        /*
+         * Ao trocar de página no celular,
+         * volta automaticamente ao início da tela.
+         */
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
     } catch (erro) {
         console.error(erro);
 
         app.innerHTML = `
             <div class="painel">
                 <p class="msg">
-                    Erro: ${escapeHtml(erro.message)}
+                    Erro: ${escapeHtml(
+                        erro?.message || 'Não foi possível abrir esta página.'
+                    )}
                 </p>
             </div>
         `;
