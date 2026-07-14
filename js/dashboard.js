@@ -1,7 +1,7 @@
 async function renderDashboard() {
     setTitulo(
-        'Controle Financeiro',
-        'Resumo financeiro pessoal'
+        "Financeiro Pessoal",
+        "Resumo do seu mês"
     );
 
     const hoje = new Date();
@@ -14,16 +14,18 @@ async function renderDashboard() {
         recorrencias,
         saldoInicialRaw
     ] = await Promise.all([
-        buscar('entradas'),
-        buscar('saidas'),
-        buscar('recorrencias'),
-        buscarConfig('saldoInicial')
+        buscar("entradas"),
+        buscar("saidas"),
+        buscar("recorrencias"),
+        buscarConfig("saldoInicial")
     ]);
 
     const saldoInicial = Number(saldoInicialRaw || 0);
 
-    function pertenceAoMesAtual(dataTexto) {
-        if (!dataTexto) return false;
+    function dataNoMesAtual(dataTexto) {
+        if (!dataTexto) {
+            return false;
+        }
 
         const data = new Date(`${dataTexto}T00:00:00`);
 
@@ -34,11 +36,11 @@ async function renderDashboard() {
     }
 
     const entradasMes = entradas.filter(
-        item => pertenceAoMesAtual(item.data)
+        item => dataNoMesAtual(item.data)
     );
 
     const saidasMes = saidas.filter(
-        item => pertenceAoMesAtual(item.data)
+        item => dataNoMesAtual(item.data)
     );
 
     const recorrenciasAtivas = recorrencias.filter(
@@ -46,113 +48,213 @@ async function renderDashboard() {
     );
 
     const entradasRecorrentes = recorrenciasAtivas
-        .filter(item => item.tipo === 'entrada')
+        .filter(item => item.tipo === "entrada")
         .reduce(
-            (total, item) => total + Number(item.valor),
+            (soma, item) => soma + Number(item.valor || 0),
             0
         );
 
     const saidasRecorrentes = recorrenciasAtivas
-        .filter(item => item.tipo === 'saida')
+        .filter(item => item.tipo === "saida")
         .reduce(
-            (total, item) => total + Number(item.valor),
+            (soma, item) => soma + Number(item.valor || 0),
             0
         );
 
-    const entradasManuais = entradasMes.reduce(
-        (total, item) => total + Number(item.valor),
+    const totalEntradasManuais = entradasMes.reduce(
+        (soma, item) => soma + Number(item.valor || 0),
         0
     );
 
-    const saidasManuais = saidasMes.reduce(
-        (total, item) => total + Number(item.valor),
+    const totalSaidasManuais = saidasMes.reduce(
+        (soma, item) => soma + Number(item.valor || 0),
         0
     );
 
     const totalEntradas =
-        entradasManuais + entradasRecorrentes;
+        totalEntradasManuais +
+        entradasRecorrentes;
 
     const totalSaidas =
-        saidasManuais + saidasRecorrentes;
+        totalSaidasManuais +
+        saidasRecorrentes;
 
     const saldo =
-        saldoInicial + totalEntradas - totalSaidas;
+        saldoInicial +
+        totalEntradas -
+        totalSaidas;
 
     const ultimosLancamentos = [
         ...entradasMes.map(item => ({
             data: item.data,
-            tipo: 'Entrada',
+            tipo: "entrada",
+            tipoTexto: "Entrada",
             descricao: item.descricao,
-            valor: Number(item.valor)
+            valor: Number(item.valor || 0)
         })),
 
         ...saidasMes.map(item => ({
             data: item.data,
-            tipo: 'Saída',
+            tipo: "saida",
+            tipoTexto: "Saída",
             descricao: item.descricao,
-            valor: Number(item.valor)
+            valor: Number(item.valor || 0)
         }))
     ]
-        .sort((a, b) => b.data.localeCompare(a.data))
+        .sort((a, b) =>
+            String(b.data).localeCompare(String(a.data))
+        )
         .slice(0, 10);
 
-    document.getElementById('app').innerHTML = `
-        <div class="cards">
-            <div class="card verde">
-                <span>Saldo</span>
-                <strong>${moeda(saldo)}</strong>
+    document.getElementById("app").innerHTML = `
+        <section class="dashboard-simples">
+
+            <div class="resumo-dashboard-simples">
+
+                <div class="resumo-card-simples saldo">
+                    <span>Saldo disponível</span>
+                    <strong>${moeda(saldo)}</strong>
+                </div>
+
+                <div class="resumo-card-simples entrada">
+                    <span>Entradas do mês</span>
+                    <strong>${moeda(totalEntradas)}</strong>
+                </div>
+
+                <div class="resumo-card-simples saida">
+                    <span>Saídas do mês</span>
+                    <strong>${moeda(totalSaidas)}</strong>
+                </div>
+
+                <div class="resumo-card-simples inicial">
+                    <span>Saldo inicial</span>
+                    <strong>${moeda(saldoInicial)}</strong>
+                </div>
+
             </div>
 
-            <div class="card azul">
-                <span>Entradas do mês</span>
-                <strong>${moeda(totalEntradas)}</strong>
+            <div class="acoes-dashboard-simples">
+
+                <button
+                    type="button"
+                    class="acao-dashboard entrada"
+                    onclick="navegar('entradas')"
+                >
+                    <span>➕</span>
+                    Nova entrada
+                </button>
+
+                <button
+                    type="button"
+                    class="acao-dashboard saida"
+                    onclick="navegar('saidas')"
+                >
+                    <span>➖</span>
+                    Nova saída
+                </button>
+
+                <button
+                    type="button"
+                    class="acao-dashboard recorrencia"
+                    onclick="navegar('recorrencias')"
+                >
+                    <span>🔄</span>
+                    Recorrências
+                </button>
+
+                <button
+                    type="button"
+                    class="acao-dashboard previsao"
+                    onclick="navegar('previsao')"
+                >
+                    <span>📅</span>
+                    Fluxo previsto
+                </button>
+
             </div>
 
-            <div class="card laranja">
-                <span>Saídas do mês</span>
-                <strong>${moeda(totalSaidas)}</strong>
+            <div class="painel">
+                <h2>Resumo do mês</h2>
+
+                <div class="resumo-linhas">
+
+                    <div>
+                        <span>Entradas manuais</span>
+                        <strong>${moeda(totalEntradasManuais)}</strong>
+                    </div>
+
+                    <div>
+                        <span>Entradas recorrentes</span>
+                        <strong>${moeda(entradasRecorrentes)}</strong>
+                    </div>
+
+                    <div class="saida">
+                        <span>Saídas manuais</span>
+                        <strong>${moeda(totalSaidasManuais)}</strong>
+                    </div>
+
+                    <div class="saida">
+                        <span>Saídas recorrentes</span>
+                        <strong>${moeda(saidasRecorrentes)}</strong>
+                    </div>
+
+                </div>
             </div>
 
-            <div class="card vermelho">
-                <span>Saldo inicial</span>
-                <strong>${moeda(saldoInicial)}</strong>
-            </div>
-        </div>
+            <div class="painel">
+                <h2>Últimos lançamentos</h2>
 
-        <div class="painel">
-            <h2>Últimos lançamentos do mês</h2>
+                ${
+                    ultimosLancamentos.length
+                        ? `
+                            <div class="lista-lancamentos-simples">
 
-            ${
-                ultimosLancamentos.length
-                    ? `
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Data</th>
-                                    <th>Tipo</th>
-                                    <th>Descrição</th>
-                                    <th>Valor</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
                                 ${ultimosLancamentos.map(item => `
-                                    <tr>
-                                        <td>${dataBR(item.data)}</td>
-                                        <td>${item.tipo}</td>
-                                        <td>${escapeHtml(item.descricao)}</td>
-                                        <td>${moeda(item.valor)}</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    `
-                    : `
-                        <p class="msg">
-                            Nenhum lançamento cadastrado neste mês.
-                        </p>
-                    `
-            }
-        </div>
+                                    <div class="lancamento-simples">
+
+                                        <div class="icone-lancamento ${item.tipo}">
+                                            ${
+                                                item.tipo === "entrada"
+                                                    ? "↑"
+                                                    : "↓"
+                                            }
+                                        </div>
+
+                                        <div class="dados-lancamento">
+                                            <strong>
+                                                ${escapeHtml(item.descricao)}
+                                            </strong>
+
+                                            <span>
+                                                ${item.tipoTexto}
+                                                •
+                                                ${dataBR(item.data)}
+                                            </span>
+                                        </div>
+
+                                        <strong class="valor-lancamento ${item.tipo}">
+                                            ${
+                                                item.tipo === "saida"
+                                                    ? "- "
+                                                    : "+ "
+                                            }
+                                            ${moeda(item.valor)}
+                                        </strong>
+
+                                    </div>
+                                `).join("")}
+
+                            </div>
+                        `
+                        : `
+                            <p class="msg">
+                                Nenhum lançamento cadastrado neste mês.
+                            </p>
+                        `
+                }
+
+            </div>
+
+        </section>
     `;
 }
