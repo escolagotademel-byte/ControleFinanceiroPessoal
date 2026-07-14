@@ -2,10 +2,10 @@ let paginaAtual = 'dashboard';
 
 document.addEventListener('DOMContentLoaded', async () => {
     const menu = document.querySelector('.sidebar');
-    const botaoMenuMobile = document.getElementById('btnMenuMobile');
+    const botaoMenuInferior = document.getElementById('btnMenuInferior');
 
-    if (botaoMenuMobile && menu) {
-        botaoMenuMobile.addEventListener('click', event => {
+    if (botaoMenuInferior && menu) {
+        botaoMenuInferior.addEventListener('click', event => {
             event.preventDefault();
             event.stopPropagation();
 
@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (menu) {
         menu.addEventListener('click', async event => {
-            const botao = event.target.closest('.nav');
+            const botao = event.target.closest('[data-page]');
 
             if (!botao) {
                 return;
@@ -55,7 +55,7 @@ function setTitulo(titulo, subtitulo) {
 }
 
 function setActive(page) {
-    document.querySelectorAll('.nav').forEach(botao => {
+    document.querySelectorAll('[data-page]').forEach(botao => {
         botao.classList.toggle(
             'active',
             botao.dataset.page === page
@@ -70,7 +70,6 @@ async function navegar(page) {
     const app = document.getElementById('app');
 
     if (!app) {
-        console.error('Área principal do sistema não encontrada.');
         return;
     }
 
