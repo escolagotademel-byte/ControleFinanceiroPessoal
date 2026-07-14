@@ -174,26 +174,6 @@ async function renderDashboard() {
             </div>
 
             
-                        <span>Entradas manuais</span>
-                        <strong>${moeda(totalEntradasManuais)}</strong>
-                    </div>
-
-                    <div>
-                        <span>Entradas recorrentes</span>
-                        <strong>${moeda(entradasRecorrentes)}</strong>
-                    </div>
-
-                    <div class="saida">
-                        <span>Saídas manuais</span>
-                        <strong>${moeda(totalSaidasManuais)}</strong>
-                    </div>
-
-                    <div class="saida">
-                        <span>Saídas recorrentes</span>
-                        <strong>${moeda(saidasRecorrentes)}</strong>
-                    </div>
-
-                </div>
             </div>
 
             <div class="painel">
