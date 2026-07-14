@@ -2,87 +2,42 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Controle Financeiro</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>Financeiro Pessoal</title>
 
   <link rel="stylesheet" href="css/style.css" />
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
-<body>
+<body class="app-pessoal">
 
-  <aside class="sidebar">
+  <main class="main main-pessoal">
 
-    <div class="brand">💰 Financeiro Pessoal</div>
-
-    <button
-      id="btnMenuInferior"
-      class="nav nav-menu-mobile"
-      type="button"
-    >
-      ☰ Menu
-    </button>
-
-    <button
-      class="nav nav-opcao active"
-      data-page="dashboard"
-      type="button"
-    >
-      🏠 Dashboard
-    </button>
-
-    <button
-      class="nav nav-opcao"
-      data-page="entradas"
-      type="button"
-    >
-      ➕ Entradas
-    </button>
-
-    <button
-      class="nav nav-opcao"
-      data-page="saidas"
-      type="button"
-    >
-      ➖ Saídas
-    </button>
-
-    <button
-      class="nav nav-opcao"
-      data-page="recorrencias"
-      type="button"
-    >
-      🔄 Recorrências
-    </button>
-
-    <button
-      class="nav nav-opcao"
-      data-page="previsao"
-      type="button"
-    >
-      📅 Fluxo Previsto
-    </button>
-
-    <button
-      class="nav nav-opcao"
-      data-page="configuracoes"
-      type="button"
-    >
-      ⚙️ Configurações
-    </button>
-
-  </aside>
-
-  <main class="main">
-
-    <div class="topbar">
+    <div class="topbar topbar-pessoal">
 
       <div>
-        <h1 id="pageTitle">Controle Financeiro</h1>
-        <p id="pageSubtitle">Resumo financeiro pessoal</p>
+        <h1 id="pageTitle">💰 Financeiro Pessoal</h1>
+
+        <p id="pageSubtitle">
+          Resumo do seu mês
+        </p>
       </div>
+
+      <button
+        id="btnVoltarInicio"
+        class="btn-voltar-inicio"
+        type="button"
+        onclick="navegar('dashboard')"
+        hidden
+      >
+        ← Início
+      </button>
 
       <span id="statusConexao" class="status">
         Conectando...
@@ -102,7 +57,6 @@
   <script src="js/saidas.js"></script>
   <script src="js/recorrencias.js"></script>
   <script src="js/previsao.js"></script>
-  <script src="js/configuracoes.js"></script>
   <script src="js/app.js"></script>
 
 </body>
