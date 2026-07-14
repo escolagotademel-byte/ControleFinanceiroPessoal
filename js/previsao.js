@@ -1,7 +1,7 @@
 async function renderPrevisao() {
     setTitulo(
-        'Fluxo Previsto',
-        'Previsão financeira dos próximos meses'
+        "Fluxo Previsto",
+        "Previsão financeira dos próximos meses"
     );
 
     const [
@@ -10,14 +10,32 @@ async function renderPrevisao() {
         recorrencias,
         saldoInicialRaw
     ] = await Promise.all([
-        buscar('entradas'),
-        buscar('saidas'),
-        buscar('recorrencias'),
-        buscarConfig('saldoInicial')
+        buscar("entradas"),
+        buscar("saidas"),
+        buscar("recorrencias"),
+        buscarConfig("saldoInicial")
     ]);
 
     const recorrenciasAtivas = recorrencias.filter(
         item => item.ativo !== false
+    );
+
+    const entradasRecorrentes = recorrenciasAtivas.filter(
+        item => item.tipo === "entrada"
+    );
+
+    const saidasRecorrentes = recorrenciasAtivas.filter(
+        item => item.tipo === "saida"
+    );
+
+    const totalEntradasRecorrentes = entradasRecorrentes.reduce(
+        (total, item) => total + Number(item.valor || 0),
+        0
+    );
+
+    const totalSaidasRecorrentes = saidasRecorrentes.reduce(
+        (total, item) => total + Number(item.valor || 0),
+        0
     );
 
     let saldoAcumulado = Number(saldoInicialRaw || 0);
@@ -36,7 +54,7 @@ async function renderPrevisao() {
         const mes = dataMes.getMonth();
 
         const chaveMes =
-            `${ano}-${String(mes + 1).padStart(2, '0')}`;
+            `${ano}-${String(mes + 1).padStart(2, "0")}`;
 
         const entradasDoMes = entradas.filter(
             item => item.data?.slice(0, 7) === chaveMes
@@ -46,35 +64,15 @@ async function renderPrevisao() {
             item => item.data?.slice(0, 7) === chaveMes
         );
 
-        const entradasRecorrentes = recorrenciasAtivas.filter(
-            item => item.tipo === 'entrada'
-        );
-
-        const saidasRecorrentes = recorrenciasAtivas.filter(
-            item => item.tipo === 'saida'
-        );
-
         const totalEntradasManuais = entradasDoMes.reduce(
-            (total, item) => total + Number(item.valor),
+            (total, item) => total + Number(item.valor || 0),
             0
         );
 
         const totalSaidasManuais = saidasDoMes.reduce(
-            (total, item) => total + Number(item.valor),
+            (total, item) => total + Number(item.valor || 0),
             0
         );
-
-        const totalEntradasRecorrentes =
-            entradasRecorrentes.reduce(
-                (total, item) => total + Number(item.valor),
-                0
-            );
-
-        const totalSaidasRecorrentes =
-            saidasRecorrentes.reduce(
-                (total, item) => total + Number(item.valor),
-                0
-            );
 
         const totalEntradas =
             totalEntradasManuais +
@@ -90,15 +88,17 @@ async function renderPrevisao() {
             ...entradasDoMes.map(item => ({
                 data: item.data,
                 descricao: item.descricao,
-                valor: Number(item.valor),
-                tipo: 'entrada'
+                valor: Number(item.valor || 0),
+                tipo: "entrada",
+                origem: "Entrada"
             })),
 
             ...saidasDoMes.map(item => ({
                 data: item.data,
                 descricao: item.descricao,
-                valor: Number(item.valor),
-                tipo: 'saida'
+                valor: Number(item.valor || 0),
+                tipo: "saida",
+                origem: "Saída"
             })),
 
             ...entradasRecorrentes.map(item => ({
@@ -107,9 +107,10 @@ async function renderPrevisao() {
                     mes,
                     item.dia
                 ),
-                descricao: `${item.descricao} (recorrente)`,
-                valor: Number(item.valor),
-                tipo: 'entrada'
+                descricao: item.descricao,
+                valor: Number(item.valor || 0),
+                tipo: "entrada",
+                origem: "Entrada recorrente"
             })),
 
             ...saidasRecorrentes.map(item => ({
@@ -118,11 +119,14 @@ async function renderPrevisao() {
                     mes,
                     item.dia
                 ),
-                descricao: `${item.descricao} (recorrente)`,
-                valor: Number(item.valor),
-                tipo: 'saida'
+                descricao: item.descricao,
+                valor: Number(item.valor || 0),
+                tipo: "saida",
+                origem: "Saída recorrente"
             }))
-        ].sort((a, b) => a.data.localeCompare(b.data));
+        ].sort((a, b) =>
+            String(a.data).localeCompare(String(b.data))
+        );
 
         meses.push({
             chaveMes,
@@ -133,78 +137,101 @@ async function renderPrevisao() {
         });
     }
 
-    document.getElementById('app').innerHTML = `
-        <div class="painel">
-            <div class="lista-meses">
-                ${meses.map(mes => `
-                    <details class="mes-card">
-                        <summary>
-                            <div>
-                                <strong>${nomeMes(mes.chaveMes)}</strong>
+    document.getElementById("app").innerHTML = `
+        <section class="previsao-pessoal">
+
+            <div class="lista-meses-pessoal">
+
+                ${meses.map((mes, indice) => `
+                    <article class="mes-previsao-card">
+
+                        <button
+                            type="button"
+                            class="mes-previsao-cabecalho"
+                            onclick="alternarDetalhesMes(${indice})"
+                            aria-expanded="false"
+                            id="botaoMes${indice}"
+                        >
+                            <div class="mes-previsao-titulo">
+                                <strong>
+                                    ${nomeMes(mes.chaveMes)}
+                                </strong>
+
+                                <span
+                                    id="setaMes${indice}"
+                                    class="seta-mes"
+                                >
+                                    ▼
+                                </span>
                             </div>
 
-                            <div>
-                                <span>
-                                    Entradas:
-                                    <strong>${moeda(mes.totalEntradas)}</strong>
-                                </span>
+                            <div class="mes-previsao-resumo">
 
-                                <span>
-                                    Saídas:
-                                    <strong>${moeda(mes.totalSaidas)}</strong>
-                                </span>
+                                <div class="resumo-previsao entrada">
+                                    <span>Entradas</span>
+                                    <strong>
+                                        ${moeda(mes.totalEntradas)}
+                                    </strong>
+                                </div>
 
-                                <span>
-                                    Saldo projetado:
-                                    <strong>${moeda(mes.saldo)}</strong>
-                                </span>
+                                <div class="resumo-previsao saida">
+                                    <span>Saídas</span>
+                                    <strong>
+                                        ${moeda(mes.totalSaidas)}
+                                    </strong>
+                                </div>
+
+                                <div class="resumo-previsao saldo">
+                                    <span>Saldo projetado</span>
+                                    <strong>
+                                        ${moeda(mes.saldo)}
+                                    </strong>
+                                </div>
+
                             </div>
-                        </summary>
+                        </button>
 
-                        <div class="mes-detalhes">
+                        <div
+                            id="detalhesMes${indice}"
+                            class="detalhes-mes-pessoal"
+                            hidden
+                        >
                             ${
                                 mes.lancamentos.length
-                                    ? `
-                                        <table class="table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Data</th>
-                                                    <th>Tipo</th>
-                                                    <th>Descrição</th>
-                                                    <th>Valor</th>
-                                                </tr>
-                                            </thead>
+                                    ? mes.lancamentos.map(item => `
+                                        <div class="lancamento-previsao">
 
-                                            <tbody>
-                                                ${mes.lancamentos.map(item => `
-                                                    <tr>
-                                                        <td>${dataBR(item.data)}</td>
+                                            <div class="icone-previsao ${item.tipo}">
+                                                ${
+                                                    item.tipo === "entrada"
+                                                        ? "↑"
+                                                        : "↓"
+                                                }
+                                            </div>
 
-                                                        <td>
-                                                            ${
-                                                                item.tipo === 'entrada'
-                                                                    ? 'Entrada'
-                                                                    : 'Saída'
-                                                            }
-                                                        </td>
+                                            <div class="dados-previsao">
+                                                <strong>
+                                                    ${escapeHtml(item.descricao)}
+                                                </strong>
 
-                                                        <td>
-                                                            ${escapeHtml(item.descricao)}
-                                                        </td>
+                                                <span>
+                                                    ${item.origem}
+                                                    •
+                                                    ${dataBR(item.data)}
+                                                </span>
+                                            </div>
 
-                                                        <td>
-                                                            ${
-                                                                item.tipo === 'entrada'
-                                                                    ? '+ '
-                                                                    : '- '
-                                                            }
-                                                            ${moeda(item.valor)}
-                                                        </td>
-                                                    </tr>
-                                                `).join('')}
-                                            </tbody>
-                                        </table>
-                                    `
+                                            <strong class="valor-previsao ${item.tipo}">
+                                                ${
+                                                    item.tipo === "entrada"
+                                                        ? "+ "
+                                                        : "- "
+                                                }
+                                                ${moeda(item.valor)}
+                                            </strong>
+
+                                        </div>
+                                    `).join("")
                                     : `
                                         <p class="msg">
                                             Nenhum lançamento previsto.
@@ -212,11 +239,42 @@ async function renderPrevisao() {
                                     `
                             }
                         </div>
-                    </details>
-                `).join('')}
+
+                    </article>
+                `).join("")}
+
             </div>
-        </div>
+
+        </section>
     `;
+}
+
+function alternarDetalhesMes(indice) {
+    const detalhes = document.getElementById(
+        `detalhesMes${indice}`
+    );
+
+    const botao = document.getElementById(
+        `botaoMes${indice}`
+    );
+
+    const seta = document.getElementById(
+        `setaMes${indice}`
+    );
+
+    if (!detalhes || !botao || !seta) {
+        return;
+    }
+
+    const estaFechado = detalhes.hidden;
+
+    detalhes.hidden = !estaFechado;
+    botao.setAttribute(
+        "aria-expanded",
+        String(estaFechado)
+    );
+
+    seta.textContent = estaFechado ? "▲" : "▼";
 }
 
 function montarDataRecorrencia(ano, mes, dia) {
@@ -227,13 +285,13 @@ function montarDataRecorrencia(ano, mes, dia) {
     ).getDate();
 
     const diaValido = Math.min(
-        Number(dia || 1),
+        Math.max(Number(dia || 1), 1),
         ultimoDia
     );
 
     return (
         `${ano}-`
-        + `${String(mes + 1).padStart(2, '0')}-`
-        + `${String(diaValido).padStart(2, '0')}`
+        + `${String(mes + 1).padStart(2, "0")}-`
+        + `${String(diaValido).padStart(2, "0")}`
     );
 }
