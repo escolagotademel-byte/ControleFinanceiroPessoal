@@ -7,6 +7,7 @@ async function renderDashboard() {
     const hoje = new Date();
     const anoAtual = hoje.getFullYear();
     const mesAtual = hoje.getMonth();
+    const diaAtual = hoje.getDate();
 
     const [
         entradas,
@@ -20,21 +21,37 @@ async function renderDashboard() {
         buscarConfig("saldoInicial")
     ]);
 
-    const saldoInicial =
-        Number(saldoInicialRaw || 0);
+    const saldoInicial = Number(saldoInicialRaw || 0);
 
     function dataNoMesAtual(dataTexto) {
         if (!dataTexto) {
             return false;
         }
 
-        const data = new Date(
-            `${dataTexto}T00:00:00`
-        );
+        const data = new Date(`${dataTexto}T00:00:00`);
 
         return (
             data.getFullYear() === anoAtual &&
             data.getMonth() === mesAtual
+        );
+    }
+
+    function montarDataRecorrenciaAtual(dia) {
+        const ultimoDiaMes = new Date(
+            anoAtual,
+            mesAtual + 1,
+            0
+        ).getDate();
+
+        const diaValido = Math.min(
+            Math.max(Number(dia || 1), 1),
+            ultimoDiaMes
+        );
+
+        return (
+            `${anoAtual}-`
+            + `${String(mesAtual + 1).padStart(2, "0")}-`
+            + `${String(diaValido).padStart(2, "0")}`
         );
     }
 
@@ -46,61 +63,69 @@ async function renderDashboard() {
         item => dataNoMesAtual(item.data)
     );
 
-    const recorrenciasAtivas =
-        recorrencias.filter(
-            item => item.ativo !== false
-        );
+    const recorrenciasDoMesAteHoje = recorrencias.filter(
+        item =>
+            item.ativo !== false &&
+            Number(item.dia || 1) <= diaAtual
+    );
 
-    const entradasRecorrentes =
-        recorrenciasAtivas
-            .filter(
-                item => item.tipo === "entrada"
-            )
+    const entradasRecorrentesRealizadas =
+        recorrenciasDoMesAteHoje
+            .filter(item => item.tipo === "entrada")
             .reduce(
                 (soma, item) =>
-                    soma +
-                    Number(item.valor || 0),
+                    soma + Number(item.valor || 0),
                 0
             );
 
-    const saidasRecorrentes =
-        recorrenciasAtivas
-            .filter(
-                item => item.tipo === "saida"
-            )
+    const saidasRecorrentesRealizadas =
+        recorrenciasDoMesAteHoje
+            .filter(item => item.tipo === "saida")
             .reduce(
                 (soma, item) =>
-                    soma +
-                    Number(item.valor || 0),
+                    soma + Number(item.valor || 0),
                 0
             );
 
-    const entradasManuais =
-        entradasMes.reduce(
-            (soma, item) =>
-                soma + Number(item.valor || 0),
-            0
-        );
+    const entradasManuais = entradasMes.reduce(
+        (soma, item) =>
+            soma + Number(item.valor || 0),
+        0
+    );
 
-    const saidasManuais =
-        saidasMes.reduce(
-            (soma, item) =>
-                soma + Number(item.valor || 0),
-            0
-        );
+    const saidasManuais = saidasMes.reduce(
+        (soma, item) =>
+            soma + Number(item.valor || 0),
+        0
+    );
 
     const totalEntradas =
         entradasManuais +
-        entradasRecorrentes;
+        entradasRecorrentesRealizadas;
 
     const totalSaidas =
         saidasManuais +
-        saidasRecorrentes;
+        saidasRecorrentesRealizadas;
 
     const saldo =
         saldoInicial +
         totalEntradas -
         totalSaidas;
+
+    const recorrenciasParaLista =
+        recorrenciasDoMesAteHoje.map(item => ({
+            data: montarDataRecorrenciaAtual(item.dia),
+            tipo:
+                item.tipo === "entrada"
+                    ? "entrada"
+                    : "saida",
+            tipoTexto:
+                item.tipo === "entrada"
+                    ? "Entrada recorrente"
+                    : "Saída recorrente",
+            descricao: `${item.descricao} (recorrente)`,
+            valor: Number(item.valor || 0)
+        }));
 
     const ultimosLancamentos = [
         ...entradasMes.map(item => ({
@@ -117,7 +142,9 @@ async function renderDashboard() {
             tipoTexto: "Saída",
             descricao: item.descricao,
             valor: Number(item.valor || 0)
-        }))
+        })),
+
+        ...recorrenciasParaLista
     ]
         .sort((a, b) =>
             String(b.data).localeCompare(
