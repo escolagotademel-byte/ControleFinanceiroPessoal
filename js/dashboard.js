@@ -104,7 +104,7 @@ async function renderDashboard() {
         .sort((a, b) =>
             String(b.data).localeCompare(String(a.data))
         )
-        .slice(0, 10);
+        .slice(0, 15);
 
     document.getElementById("app").innerHTML = `
         <section class="dashboard-simples">
@@ -173,12 +173,7 @@ async function renderDashboard() {
 
             </div>
 
-            <div class="painel">
-                <h2>Resumo do mês</h2>
-
-                <div class="resumo-linhas">
-
-                    <div>
+            
                         <span>Entradas manuais</span>
                         <strong>${moeda(totalEntradasManuais)}</strong>
                     </div>
